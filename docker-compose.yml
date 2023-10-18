@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - '8080:80'
+
+  app-db:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=store'
+      - 'POSTGRES_PASSWORD=123456'
+      - 'POSTGRES_USER=postgres'
+
+  app:
+    build: app
+    depends_on:
+      - app-db
+
+  auth-db:
+    image: redis:alpine
+  
+  auth:
+    build: authorization
+    depends_on:
+      - auth-db
